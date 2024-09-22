@@ -1,3 +1,3 @@
-module example.com/lists
+module example.com/practice
 
 go 1.23.1
