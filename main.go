@@ -1,133 +1,36 @@
 package main
 
-import (
-	"bufio"
-	"fmt"
-	"os"
-	"strings"
-
-	"exaple.com/note/note"
-	"exaple.com/note/todo"
-)
-
-type saver interface { // if there's only one method in interface, then name method's name + -er
-	Save() error
-}
-
-// type displayer interface {
-// 	Display() error
-// }
-
-type outputtable interface {
-	saver
-	Display()
-}
-
-// type outputtable interface {
-// 	Save() error
-// 	Display()
-// }
+import "fmt"
 
 func main() {
-	printSomething(1)
-	printSomething(1.5)
-	printSomething("Hello")
+	result := add(1, 2)
+	fmt.Println(result)
 
-	title, content := getNoteDate()
-	todoText := getUserInput("Todo text: ")
-
-	todo, err := todo.New(todoText)
-
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	printSomething(todo)
-
-	userNote, err := note.New(title, content)
-
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-
-	err = outputData(todo)
-
-	if err != nil {
-		return
-	}
-
-	outputData(userNote)
 }
 
-func printSomething(value interface{}) { // or any
-	intVal, ok := value.(int)
-
-	if ok {
-		fmt.Println("Integer:", intVal)
-		return
-	}
-	floatVal, ok := value.(float64)
-
-	if ok {
-		fmt.Println("Float:", floatVal)
-		return
-	}
-
-	stringVal, ok := value.(int)
-
-	if ok {
-		fmt.Println("String:", stringVal)
-		return
-	}
-	// switch value.(type) {
-	// case int:
-	// 	fmt.Println("Integer:", value)
-	// case float64:
-	// 	fmt.Println("Float:", value)
-	// case string:
-	// 	fmt.Println("String:", value)
-	// }
+func add[T int | float64 | string](a, b T) T {
+	return a + b
 }
 
-func outputData(data outputtable) error {
-	data.Display()
-	return saveData(data)
-}
+// func add(a, b interface{}) interface{} { // result + 1 >> error: mismatched types interface{} and int
+// 	aInt, aIsInt := a.(int)
+// 	bInt, bIsInt := b.(int)
 
-func saveData(data saver) error {
-	err := data.Save()
+// 	if aIsInt && bIsInt {
+// 		return aInt + bInt
+// 	}
 
-	if err != nil {
-		fmt.Println("saving the data failed.")
-		return err
-	}
+// 	aFloat, aIsFloat := a.(float64)
+// 	bFloat, bIsFloat := b.(float64)
 
-	fmt.Println("Saving the data succeeded!")
-	return nil
-}
+// 	if aIsFloat && bIsFloat {
+// 		return aFloat + bFloat
+// 	}
 
-func getNoteDate() (string, string) {
-	title := getUserInput("Note title:")
-	content := getUserInput("Note content:")
+// 	aString, aIsString := a.(string)
+// 	bString, bIsString := b.(string)
 
-	return title, content
-}
-
-func getUserInput(prompt string) string {
-	fmt.Printf("%v ", prompt)
-
-	reader := bufio.NewReader(os.Stdin)
-
-	text, err := reader.ReadString('\n')
-
-	if err != nil {
-		return ""
-	}
-
-	text = strings.TrimSuffix(text, "\n")
-	text = strings.TrimSuffix(text, "\r")
-
-	return text
-}
+// 	if aIsString && bIsString {
+// 		return aString + bString
+// 	}
+// }
